@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import Stats from 'stats.js'
 
 
 const curves = () => {
@@ -12,6 +13,9 @@ const curves = () => {
     let camera, scene, renderer, controls, curve;
     let scrollValue = 0;
     let currentDistance = 0;
+    const stats = new Stats()
+    let statistics = stats.showPanel(0) 
+    document.body.appendChild(stats.dom)
     const init = async () => {
 
       const loader = new GLTFLoader();
@@ -23,6 +27,7 @@ const curves = () => {
       } catch (error) {
         console.error('An error occurred while loading the GLB file:', error);
       }
+      window.addEventListener('resize', onWindowResize);
     };
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x808080);
@@ -61,10 +66,11 @@ const curves = () => {
     //scene.add(curveObject);
     curve.up = new THREE.Vector3(0, 0, 1)
 
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setAnimationLoop(animate);
-    document.body.appendChild(renderer.domElement);
+    containerRef.current.appendChild(renderer.domElement);
 
 
     const hdrUrl = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/dikhololo_night_2k.hdr'
@@ -125,13 +131,27 @@ const curves = () => {
     controls.minDistance = 1;
     controls.maxDistance = 10;
     function animate() {
+      stats.begin();
       const position = curve.getPointAt(scrollValue)
       camera.position.copy(position);
-
       renderer.render(scene, camera);
+      stats.end();
+      console.log("draw", renderer.info.render.calls)
+      
     }
     init()
     animate()
+    const onWindowResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    return () => {
+      window.removeEventListener('resize', onWindowResize);
+      if (containerRef.current) {
+      containerRef.current.removeChild(renderer.domElement);
+      }
+    };
   }, []);
 
 

@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <h1>this is the iframe</h1>
       <div>
-        <iframe className="i" src="./curves" width="100%" height="600px"></iframe>
+        <iframe src="./curves" width="100%" height="600px"></iframe>
       </div>
     </>
   );
