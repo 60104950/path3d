@@ -19,7 +19,7 @@ const mia = () => {
     const init = async () => {
       const loader = new GLTFLoader();
       try {
-          const gltf = await loader.loadAsync('miaFinal.glb');
+          const gltf = await loader.loadAsync('mia.glb');
           const model = gltf.scene
           scene.add(model)
           model.traverse((child) => {
@@ -84,7 +84,7 @@ const mia = () => {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setAnimationLoop(animate);
     containerRef.current.appendChild(renderer.domElement);
