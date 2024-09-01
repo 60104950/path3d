@@ -23,12 +23,77 @@ const curves = () => {
         const gltf = await loader.loadAsync('finalmazlisFinal2.glb');
         const model = gltf.scene
         scene.add(model)
+        model.traverse((child) => {
+          if (child.isMesh && child.name === 'screens') {
+            console.log(child.name)
+            child.material.map = videoTextureMain;
+            //child.material.emissive = new THREE.Color( 0x585858);
+            //child.material.emissiveIntensity = 6
+            //child.material.emissiveMap = videoTextureMain;
+            child.material.needsUpdate = true;
+            videoTextureMain.dispose()
+          }
+          if (child.isMesh && child.name === 'screensWall') {
+            child.material.map = videoTextureWall;
+            child.material.needsUpdate = true;
+            videoTextureWall.dispose()
+          }
+          if(child.isMesh && child.name === 'tv') {
+            child.material.map = videoTexture;
+            child.material.needsUpdate = true;
+            videoTexture.dispose()
+          }
+        });
 
       } catch (error) {
         console.error('An error occurred while loading the GLB file:', error);
       }
       window.addEventListener('resize', onWindowResize);
     };
+
+    const videoMain = document.createElement('video');
+      videoMain.src = 'Comp 1.mp4';  // Replace with your video file path
+      videoMain.crossOrigin = 'anonymous';
+      videoMain.loop = true;
+      videoMain.muted = true;
+      videoMain.play();
+      // Create a video texture
+      const videoTextureMain = new THREE.VideoTexture(videoMain);
+      //videoTextureMain.wrapS = THREE.RepeatWrapping;
+      //videoTextureMain.repeat.x = - 1;
+      videoTextureMain.flipY = false
+      videoTextureMain.minFilter = THREE.LinearFilter;
+      videoTextureMain.magFilter = THREE.LinearFilter;
+      videoTextureMain.format = THREE.RGBFormat
+
+      // Create a video element
+      const videowall = document.createElement('video');
+      videowall.src = 'Walltv.mp4';  // Replace with your video file path
+      videowall.crossOrigin = 'anonymous';
+      videowall.loop = true;
+      videowall.muted = true;
+      videowall.play();
+      // Create a video texture
+      const videoTextureWall = new THREE.VideoTexture(videowall);
+      videoTextureWall.flipY = false
+      videoTextureWall.minFilter = THREE.LinearFilter;
+      videoTextureWall.magFilter = THREE.LinearFilter;
+      videoTextureWall.format = THREE.RGBFormat
+
+      // Create a video element
+      const video = document.createElement('video');
+      video.src = '190624Finalzone1.mp4';  // Replace with your video file path
+      video.crossOrigin = 'anonymous';
+      video.loop = true;
+      video.muted = true;
+      video.play();
+      // Create a video texture
+      const videoTexture = new THREE.VideoTexture(video);
+      videoTexture.flipY = false
+      videoTexture.minFilter = THREE.LinearFilter;
+      videoTexture.magFilter = THREE.LinearFilter;
+      videoTexture.format = THREE.RGBFormat
+
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x808080);
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
